@@ -4,6 +4,8 @@ import last from 'lodash-es/last';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import { ConfigurableLink } from '@openmrs/esm-framework';
+import { ShoppingCartIcon } from '@openmrs/esm-framework';
+import styling from './dashboardextension.scss';
 
 export interface DashboardExtensionProps {
   path: string;
@@ -22,13 +24,27 @@ export const DashboardExtension = ({
   const location = useLocation();
   const navLink = useMemo(() => decodeURIComponent(last(location.pathname.split('/'))), [location.pathname]);
 
+  const menuIcon = (title) => {
+    switch (title) {
+      case 'Orders':
+        return <ShoppingCartIcon className={styling.icons} />;
+      default:
+        return null;
+    }
+  };
+
+  const renderIcon = menuIcon(title);
+
   return (
     <div key={path}>
       <ConfigurableLink
         className={classNames('cds--side-nav__link', { 'active-left-nav-link': path === navLink })}
         to={`${basePath}/${encodeURIComponent(path)}`}
       >
-        {t(title)}
+        <span className={styling.menu}>
+          {renderIcon}
+          <span>{t(title)}</span>
+        </span>
       </ConfigurableLink>
     </div>
   );
